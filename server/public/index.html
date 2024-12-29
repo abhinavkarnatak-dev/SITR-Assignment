@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Scraping</title>
+  </head>
+  <body>
+    <h1>Twitter Trending Topic</h1>
+    <button id="scrape-btn">Click here to run the script</button>
+    <div id="results"></div>
+
+    <script>
+      document
+        .getElementById("scrape-btn")
+        .addEventListener("click", async () => {
+          try {
+            const response = await fetch("/api/scraping/run-scraping");
+            const text = await response.text();
+            console.log("Response text:", text);
+
+            const data = JSON.parse(text);
+            document.getElementById("results").innerHTML = `
+        <h2>Trending Topics as of ${data.message}</h2>
+        <ul>
+            <li>${data.trends[0]}</li>
+            <li>${data.trends[1]}</li>
+            <li>${data.trends[2]}</li>
+            <li>${data.trends[3]}</li>
+            <li>${data.trends[4]}</li>
+        </ul>
+        <p>The IP address used was ${data.ip_address}</p>
+        <pre>${JSON.stringify(data.mongo_data, null, 2)}</pre>
+    `;
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+    </script>
+  </body>
+</html>
